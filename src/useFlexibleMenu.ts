@@ -45,17 +45,21 @@ export default function useFlexibleMenu({ items }: { items: any[] }) {
     moreWidth: 0,
   });
 
-  const ghostRef = useRef<HTMLUListElement>(null);
+  const navRef = useRef<HTMLUListElement>(null);
   const moreRef = useRef<HTMLLIElement>(null);
 
   const calculate = useDebouncedCallback(() => {
-    if (!ghostRef.current || !moreRef.current) return;
+    if (!navRef.current) return;
 
-    const moreWidth = Math.ceil(moreRef.current.getBoundingClientRect().width);
+    const moreWidth = Math.ceil(
+      moreRef.current?.getBoundingClientRect().width ?? 0
+    );
 
-    const slicePosition = getFittingItems(ghostRef.current, moreWidth);
+    const slicePosition = getFittingItems(navRef.current, moreWidth);
 
-    const firstItem = ghostRef.current.children[0];
+    console.log({ slicePosition });
+
+    const firstItem = navRef.current.children[0];
     const firstItemHeight = firstItem
       ? Math.ceil(firstItem.getBoundingClientRect().height)
       : 0;
@@ -79,7 +83,7 @@ export default function useFlexibleMenu({ items }: { items: any[] }) {
     state.slicePosition === -1 ? [] : items.slice(state.slicePosition);
 
   return {
-    ghostRef,
+    navRef,
     moreRef,
     visibleItems,
     overflowItems,

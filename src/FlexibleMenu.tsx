@@ -12,62 +12,57 @@ interface FlexibleMenuProps<T> {
   ) => React.ReactNode;
 }
 
-type Visibility = "visible" | "ghost";
+// type Visibility = "visible" | "ghost";
 
 export default function FlexibleMenu<T>(props: FlexibleMenuProps<T>) {
   const {
     items,
     itemRenderer,
-    debug = false,
+    debug = true,
     menuClassName = "",
     moreButton = () => null,
   } = props;
 
-  const { visibleItems, overflowItems, ghostRef, moreRef, height } =
+  const { visibleItems, overflowItems, navRef, moreRef, height } =
     useFlexibleMenu({
       items,
     });
 
-  const menuStyles: Record<Visibility, CSSProperties> = {
-    visible: {
-      height,
-    },
-    ghost: {
-      position: "absolute",
-      visibility: "hidden",
-      top: 0,
-      left: 0,
-    },
-  };
+  // const menuStyles: Record<Visibility, CSSProperties> = {
+  //   visible: {
+  //     height,
+  //   },
+  //   // ghost: {
+  //   //   position: "absolute",
+  //   //   visibility: "hidden",
+  //   //   top: 0,
+  //   //   left: 0,
+  //   // },
+  // };
 
-  const vis: Visibility[] = ["visible", "ghost"];
+  // const vis: Visibility[] = ["visible", "ghost"];
+
+  console.log("items", items);
 
   return (
     <div style={{ position: "relative" }}>
-      {vis.map((v) => {
-        const renderItems = v === "ghost" ? items : visibleItems;
-
-        return (
-          <ul
-            ref={v === "ghost" ? ghostRef : undefined}
-            key={v}
-            style={{
-              display: "flex",
-              alignItems: "stretch",
-              flexWrap: "wrap",
-              overflow: "hidden",
-              width: "100%",
-              ...menuStyles[v],
-            }}
-            className={menuClassName}
-          >
-            {renderItems.map(itemRenderer)}
-            {v === "visible" &&
-              overflowItems.length > 0 &&
-              moreButton(overflowItems, moreRef)}
-          </ul>
-        );
-      })}
+      <ul
+        // ref={v === "ghost" ? navRef : undefined}
+        ref={navRef}
+        style={{
+          display: "flex",
+          alignItems: "stretch",
+          flexWrap: "wrap",
+          overflow: "hidden",
+          width: "100%",
+          height,
+          // ...menuStyles[v],
+        }}
+        className={menuClassName}
+      >
+        {items.map(itemRenderer)}
+        {moreButton(overflowItems, moreRef)}
+      </ul>
 
       {debug && (
         <div className="mt-8 font-mono text-left text-sm">
